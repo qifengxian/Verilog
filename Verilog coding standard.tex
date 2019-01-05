@@ -1,0 +1,305 @@
+\RequirePackage[l2tabu, orthodox]{nag} % 检测是否使用了已经淘汰的宏包与命令
+\documentclass[utf-8, 10pt, a4paper, titlepage, oneside, onecolumn, openany]{ctexart} % 编码格式，字体大小，纸张大小，创建标题页，单面（页码在同一侧），单列排版，新章的开始不分奇偶，
+
+\usepackage{hologo} % 包含各种 Latex logo
+\usepackage{metalogo} % 包含各种 Latex logo
+\usepackage{amsmath} % 数学公式的支持与优化
+\usepackage{siunitx} % 提供学术单位与数字标准写法
+
+%%%
+\usepackage{fontspec} % 提供修改字体的功能
+\setmainfont{Times New Roman} % 英文主字体
+% \setsansfont % 英文无衬线字体
+\setmonofont{Source Code Pro} % 英文等宽字体
+% \setCJKmainfont % 中文主字体
+% \setCJKsansfont % 中文无衬线字体
+% \setCJKmonofont{Source Code Pro} % 中文等宽字体
+%\setmathrm{Optima} % 数学公式字体
+% \setmathsf[<font options>]{<font name>} % 数学公式字体
+% \setmathtt[<font options>]{<font name>} % 数学公式字体
+% \setboldmathrm[<font options>]{<font name>} % 数学公式字体
+%%%
+
+\usepackage{xcolor} % 颜色定义
+
+%%% 阴影环境设置
+\usepackage{framed}
+\colorlet{shadecolor}{red!20!green!20!blue!20}
+%%%
+
+%%% 代码环境设置
+\usepackage{listings}
+% \lstset{language = Verilog}
+\lstset{
+	basicstyle = \fontspec{Source Code Pro}, % 代码字体设置
+	backgroundcolor = \color[RGB]{245, 245, 244}, % 背景颜色
+	frame = shadowbox, % 阴影框效果
+	rulesepcolor = \color{red!20!green!20!blue!20}, % 代码框边框为淡青色
+	numbers = left, % 显示行号
+	stepnumber = 1, % 若设置为2，则显示行号为1,3,5，即 stepnumber 为公差，默认为 1
+	numberstyle = \normalsize, % 行号字体大小
+	numbersep = 16pt, % 设置行号与代码的距离，默认是 5pt
+	tabsize = 4, % table 宽度
+	keywordstyle = \color{blue!70}\bfseries, % 代码关键字为蓝色
+	% keywordstyle=[1]\color{Blue}\bfseries, % 内置函数为蓝色粗体
+	% keywordstyle=[2]\color{Purple}, % 函数参数为紫色
+	% keywordstyle=[3]\color{Blue}\underbar, % 用户函数为蓝色并加下划线
+	stringstyle = \rmfamily\slshape\color[RGB]{128,0,0}, % 字符串为紫色
+	commentstyle = \color{red!50!green!50!blue!50}, % 浅灰色的注释
+	stringstyle = \ttfamily, % 代码字符串的特殊格式
+	showstringspaces = false, % 不显示代码字符串中间的空格标记
+	breaklines=true, % 对过长的代码自动换行
+%	escapeinside = ``, % 逃逸符号，该符号中可写入中文
+	xleftmargin = 4em, % 代码框左边空白宽度
+	xrightmargin = 4em, % 代码框右边空白宽度
+	aboveskip = 2em, % 代码框与上文的距离
+	framexleftmargin = 2em % 代码框左边框与代码的距离，默认行号不在框内，2 em 令行号在框内
+}
+%%%
+
+\usepackage[cache=false]{minted} % 代码高亮，使用该宏包需要开启 --shell-escape，在编译命令中修改为 xelatex.exe -synctex=1 -interaction=nonstopmode --shell-escape -8bit %.tex 增加 -8bit 选项是为了防止 tab 显示异常
+
+\usepackage{txfonts} % 文本与数学符号库，且默认将正文英文改为 Times Roman 字体
+\usepackage{upgreek} % 提供直立希腊字母，将 $\mu$ 改为 $\upmu$
+
+%%% 交叉引用环境设置，红色无边框，此处等号两边不可加空格
+\usepackage[colorlinks=true, linkcolor=red, citecolor=blue, menucolor=green, pdfborder={0,0,0}, unicode, pdfstartview=FitH, bookmarks=true, bookmarksopen=true, hyperfootnotes=true]{hyperref}
+
+\usepackage{tabularx} % 灵活控制表格的生成
+\usepackage{booktabs} % 创建没有竖线分隔的表格，即学术表格
+
+%%% 为目录中section补上引导点
+\usepackage[titles]{tocloft} 
+\renewcommand\cftsecdotsep{\cftdotsep}
+\renewcommand\cftsecleader{\cftdotfill{\cftsecdotsep}} 
+%%%
+
+% \usepackage[left = 1.25in,right = 1.25in,top = 1in,bottom = 1in]{geometry} % 调整页面边距
+\raggedbottom % 页面顶部对齐
+
+%%% 页眉页脚设置
+\usepackage{fancyhdr}
+\pagestyle{fancy} % 使用 fancy 风格
+\fancyhf{} % 清空页眉页脚
+\fancyhead[L]{\bfseries\rightmark} % 页眉居左
+%\fancyhead[L]{\bfseries\leftmark} % 页眉居左
+\fancyfoot[C]{\thepage} % 页脚居中
+\renewcommand{\headrulewidth}{0.5pt} % 页眉增加下划线并设置线宽
+%%%
+
+\usepackage{makeidx} % 提供索引功能
+\makeindex % 生成索引
+
+\usepackage{microtype} % 改善单词、字母的间距，需要放到字体宏包后面
+
+\begin{document}
+	\renewcommand{\thefootnote}{\fnsymbol{footnote}} % 符号脚注
+
+	\pdfbookmark[1]{封面}{封面} % 手动书签
+
+	\title{\textbf{Verilog 编码规范}} % 标题页面标题
+	\author{吕旭东 \thanks{~齐奉先} \footnote{~于上海天马} \footnote{~\TeX ~ \LaTeX ~ \LaTeXe ~ \XeLaTeX $^{\cite{Latex介绍}}$}} % 标题页面作者及脚注
+	\date{\today} % 标题页面日期
+	\maketitle % 创建标题页面
+
+	\tableofcontents \addcontentsline{toc}{section}{目录}	% 创建带链接目录
+	\clearpage % 换页
+
+	\renewcommand{\thefootnote}{\arabic{footnote}} % 数字脚注
+
+
+	\section{宗旨}
+		规范、严谨、优雅。
+		
+		规范意为代码编写必须符合本文档的准则。当涉及到本文档未曾描述的情况时，则需以严谨的态度处理，以蹲循本文档的精神。当达成同一目的有多种方法可行时，应尽可能以最优雅的方式实现。
+		
+	\section{命名规范}
+
+		\begin{enumerate}
+			\item parameter 与  {\fontspec{Source Code Pro}`}define 定义的名称全部大写。 % 该方法改变局部字体
+			
+			\item module 名的每个单词首字母大写，不使用下划线 \footnote{~定义 module 时名称中不使用下划线，但例化 module 时的实体名加下划线再加“Un”，n 为实体序号，参见代码表~\ref{格式示例}~。}，后加层次级别 Vn，n 为层次级别，顶层 module 为 0，子 module 依次递增。例如：
+
+				\begin{table}[h]
+					\caption{命名示例 0} \label{命名示例0}
+				\end{table}
+
+				\begin{shaded}
+					%%% 数学公式逃逸，行号居左，行号与左框线距离，tab 4 格，去除左端 6 个 tab，加上代码框线，代码与左框线距离，左右空白宽度
+					\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=6,frame=single,framesep=4pt,xleftmargin=2em,xrightmargin=2em]{Verilog}
+						`define MAX 99
+						parameter NUMBER 64
+						module TopV0();
+						module KeyControlV1();
+					\end{minted}
+				\end{shaded}
+
+			\item reg、wire、output 与 input 信号名全部使用小写字母 \footnote{~唯一的例外是低电平有效的信号，需要加大写字母 N，参见代码表 ~\ref{命名示例1}~ 或代码表 ~\ref{命名示例2}~。}，单词间用下划线连接。默认为标量 wire，若为 reg 变量则加后缀 r，向量加后缀 v，输入变量加后缀 i，输出变量加后缀 o，低电平有效变量下划线前加 N。例如：
+			
+			\clearpage
+
+				\begin{table}[h]
+					\caption{命名示例 1} \label{命名示例1}
+				\end{table}
+
+\begin{lstlisting}[language = Verilog]
+`timescale 1 ns / 1 ps
+
+module TopV0(
+	input wire clk_i,
+	input wire resetN_i,
+	input wire[7:0] data_iv,
+	output reg hsync_o,
+	output reg[7:0] rdata_ov
+);
+\end{lstlisting}
+
+				\begin{table}[h]
+					\caption{命名示例 2} \label{命名示例2}
+				\end{table}
+
+				\begin{shaded}
+					%%% 数学公式逃逸，行号居左，行号与左框线距离，tab 4 格，去除左端 6 个 tab，加上代码框线，代码与左框线距离
+					\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=6,frame=single,framesep=4pt,xleftmargin=2em,xrightmargin=2em]{Verilog}
+						`timescale 1 ns / 1 ps
+						
+						module TopV0(
+							input wire clk_i,
+							input wire resetN_i,
+							input wire[7:0] data_iv,
+							output reg hsync_o,
+							output reg[7:0] rdata_ov
+						);
+					\end{minted}
+				\end{shaded}
+
+		\end{enumerate}
+
+	\clearpage
+
+	\section{代码格式}
+		代码格式使用 Java 风格的缩进方式$^{\cite{Java 编程思想}}$，以 Java 中的 “\{” 等价 Verilog 中的 “begin”，Java 中的 “\}” 等价 Verilog 中的 “end”。编码格式使用 gbk \footnote{~考虑到 Quartus II 仅支持 gbk 编码，所以为避免乱码出现，所有编辑器统一使用 gbk 编码。}，缩进使用 Table，且 Table 宽度为 4 个空格。运算符左右各加一个空格，逗号后加一个空格，关键字与小括号之间加一个空格， module 名与小括号间不加空格，关键字与中括号间不加空格。下述例程。
+		
+		\begin{table}[h]
+			\caption{格式示例} \label{格式示例}
+		\end{table}
+		
+		\begin{shaded}
+			\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=4,frame=single,framesep=4pt,xleftmargin=1em,xrightmargin=0em]{Verilog}
+				`timescale 1 ns / 1 ps
+				`define MAX 512
+				
+				module TestAgingV0(
+					input wire clk_i,
+					input wire resetN_i,
+					output reg[23:0] pic_data_ov
+				);
+				
+					parameter ONE_STEP = 16;
+					parameter TWO_STEP = 32;
+
+					reg[15:0] count_rv;
+					reg[7:0] picture_rv;
+					reg enable_r;
+					wire flag_w;
+					wire[7:0] number_wv;
+					
+					initial begin
+						count_rv <= 16'd0;
+						picture_rv <= 8'd0;
+						enable_r <= 1'd1;
+					end
+					
+					assign flag_w = enable_r;
+					assign number_wv = picture_rv;
+					
+					always @(posedge clk_i) begin
+						if (resetN_i == 0) begin
+							picture_rv <= 0;
+							count_rv <= 0;
+						end else begin
+							count_rv <= count_rv + 1;
+							if ((count_rv == ONE_STEP) begin
+								picture_rv <= 1;
+							end else if (count_rv == TWO_STEP) begin
+								picture_rv <= 2;
+							end else if (count_rv >= MAX) begin
+								picture_rv <= 0;
+								count_rv <= 0;
+							end
+						end
+					end
+
+					always @(posedge clk_i) begin
+						if (enable_r == 1) begin
+							case (picture_rv)
+							0: begin
+								pic_data_ov <= 0;
+							end
+							1: begin
+								pic_data_ov <= 1;
+							end
+							2: begin
+								pic_data_ov <= 2;
+							end
+							default: begin
+								pic_data_ov <= 0;
+							end
+							endcase
+						end else begin
+							pic_data_ov <= 0;
+						end
+					end
+					
+					PowerOnV1 PwoerOnV1_U0(
+						.clk_i(clk_i),
+						.resetN_i(resetN_i)
+					);
+					
+					PowerOnV1 PwoerOnV1_U1(
+						.clk_i(clk_i),
+						.resetN_i(resetN_i)
+					);
+					
+					PictureControlV1_U0(
+						.clk_i(clk_i),
+						.resetN_i(resetN_i),
+						.picture_iv(picture_rv[7:0])
+					);
+					
+				endmodule
+
+			\end{minted}
+		\end{shaded}
+
+	\clearpage
+
+	\section{编程风格}
+		\begin{enumerate}
+			\item 定义 module 时其输入输出端口必须在 module 的声明区\footnote{~即 module 名后的小括号内。}完成，并且每个端口都必须显式声明其属于 reg 类型还是 wrie 类型。
+			
+			\item module 的 input 端口定义为 wire 类型，output 端口定义为 reg 类型，inout 端口\footnote{~例如 IIC 的 SDA 端口即为 inout 类型，因 IIC 通信既有读亦有写。} 定义为 wire 类型，除极特殊的应用场景外，必须如此执行。即输入信号不能寄存，而输出信号必须寄存。此举的目的在于防止出现 module 例化与互联时的端口类型不匹配错误。
+			
+			\item 例化 module 时，如果连接的信号是向量，则必须显式指明其位宽，参见代码表~\ref{格式示例}~。
+			
+			\item module 端口名与其连接的信号名应尽可能保持一致\footnote{~除表示信号类型的后缀之外。}。
+			
+		\end{enumerate}
+
+	\clearpage
+
+	\begin{thebibliography}{9}
+		\bibitem{Latex介绍} Tobias Oetiker, Hubert Partl, Irene Hyna and Elisabeth Schlegl. China\TeX 论坛译. 一份不太简短的 \LaTeXe 介绍[R]. 2016.
+		\bibitem{Java 编程思想} [美] Bruce Eckel. 陈昊鹏译. Java编程思想:第4版[M]. 机械工业出版社, 2007.
+		\bibitem{Verilog 标准} IEEE Computer Society. IEEE Standard for Verilog$^{\textregistered}$ Hardware Description Language[R]. IEEE Std 1364\texttrademark -2005. USA 7 April 2006.
+	\end{thebibliography}
+	\addcontentsline{toc}{section}{参考文献} % 添加目录项
+
+	\clearpage
+
+%	\renewcommand{\numberline}[1]{\lotlabel~#1\hspace*{1em}} % 生成表格索引
+	\listoftables % 生成表格索引
+
+	\addcontentsline{toc}{section}{表格} % 添加目录项
+
+\end{document}
