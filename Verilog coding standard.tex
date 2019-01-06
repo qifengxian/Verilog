@@ -67,6 +67,7 @@
 
 \usepackage{tabularx} % 灵活控制表格的生成
 \usepackage{booktabs} % 创建没有竖线分隔的表格，即学术表格
+\renewcommand\tablename{代码} % 将表 Title 由表 n 改为 代码 n
 
 %%% 为目录中section补上引导点
 \usepackage[titles]{tocloft} 
@@ -81,8 +82,8 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy} % 使用 fancy 风格
 \fancyhf{} % 清空页眉页脚
-\fancyhead[L]{\bfseries\rightmark} % 页眉居左
-%\fancyhead[L]{\bfseries\leftmark} % 页眉居左
+\fancyhead[L]{\bfseries\rightmark} % 页眉居左，使用后置标题作页眉
+%\fancyhead[L]{\bfseries\leftmark} % 页眉居左，使用前置标题作页眉
 \fancyfoot[C]{\thepage} % 页脚居中
 \renewcommand{\headrulewidth}{0.5pt} % 页眉增加下划线并设置线宽
 %%%
@@ -111,51 +112,69 @@
 	\section{宗旨}
 		规范、严谨、优雅。
 		
-		规范意为代码编写必须符合本文档的准则。当涉及到本文档未曾描述的情况时，则需以严谨的态度处理，以蹲循本文档的精神。当达成同一目的有多种方法可行时，应尽可能以最优雅的方式实现。
+		规范意为代码编写必须符合本文档的准则。当涉及到本文档未曾描述的情况时，则需以严谨的态度处理，以蹲循本规范的精神。当达成同一目的有多种方法可行时，应尽可能以最优雅的方式实现。
 		
 	\section{命名规范}
 
 		\begin{enumerate}
-			\item parameter 与  {\fontspec{Source Code Pro}`}define 定义的名称全部大写。 % 该方法改变局部字体
+			\item parameter 与 {\fontspec{Source Code Pro}`}define 定义的名称所有字母全部大写，名称中的单词间隔使用下划线连接。 % 该方法改变局部字体
 			
-			\item module 名的每个单词首字母大写，不使用下划线 \footnote{~定义 module 时名称中不使用下划线，但例化 module 时的实体名加下划线再加“Un”，n 为实体序号，参见代码表~\ref{格式示例}~。}，后加层次级别 Vn，n 为层次级别，顶层 module 为 0，子 module 依次递增。例如：
+			\item module 名称的每个单词首字母大写，其余字母小写，单词间隔不使用下划线连接。例化 module 时的实体名由 module 名后加“Un”构成，n 为同一 module 例化的实体序号，从 0 开始，依次递增。例如：
 
 				\begin{table}[h]
-					\caption{命名示例 0} \label{命名示例0}
+					\caption{命名示例一} \label{命名示例一}
 				\end{table}
 
 				\begin{shaded}
 					%%% 数学公式逃逸，行号居左，行号与左框线距离，tab 4 格，去除左端 6 个 tab，加上代码框线，代码与左框线距离，左右空白宽度
-					\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=6,frame=single,framesep=4pt,xleftmargin=2em,xrightmargin=2em]{Verilog}
-						`define MAX 99
-						parameter NUMBER 64
-						module TopV0();
-						module KeyControlV1();
+					\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=6,frame=single,framesep=4pt,xleftmargin=0em,xrightmargin=0em]{Verilog}
+						/* 该代码未添加 module 端口及定义，
+						*  仅作为命名规范的参考。 */
+
+						`define PICTURE_MODULE
+						`define VECTOR 23
+						
+						parameter MAX_NUMBER = 64;
+						parameter CLOCK = 9600;
+
+						module Top();
+						module KeyControl();
+
+						PowerOn PowerOnU0();
+						PowerOn PowerOnU1();
+						
+						KeyControl KeyControlU0();
+						KeyControl KeyControlU1();
+						KeyControl KeyControlU2();
 					\end{minted}
 				\end{shaded}
 
-			\item reg、wire、output 与 input 信号名全部使用小写字母 \footnote{~唯一的例外是低电平有效的信号，需要加大写字母 N，参见代码表 ~\ref{命名示例1}~ 或代码表 ~\ref{命名示例2}~。}，单词间用下划线连接。默认为标量 wire，若为 reg 变量则加后缀 r，向量加后缀 v，输入变量加后缀 i，输出变量加后缀 o，低电平有效变量下划线前加 N。例如：
-			
 			\clearpage
+				
+			\item reg、wire、output、input 与 inout 等信号与端口的名称全部使用小写字母定义，单词间用下划线连接，低电平有效的信号加后缀 n。例如：
 
 				\begin{table}[h]
-					\caption{命名示例 1} \label{命名示例1}
+					\caption{命名示例二} \label{命名示例二}
 				\end{table}
 
 \begin{lstlisting}[language = Verilog]
 `timescale 1 ns / 1 ps
 
-module TopV0(
+module Top(
 	input wire clk_i,
-	input wire resetN_i,
+	input wire reset_ni,
 	input wire[7:0] data_iv,
 	output reg hsync_o,
 	output reg[7:0] rdata_ov
 );
+	wire uart_rx_w;
+	reg[7:0] uart_data_rv;
+
+endmodule
 \end{lstlisting}
 
 				\begin{table}[h]
-					\caption{命名示例 2} \label{命名示例2}
+					\caption{命名示例三} \label{命名示例三}
 				\end{table}
 
 				\begin{shaded}
@@ -163,13 +182,17 @@ module TopV0(
 					\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=6,frame=single,framesep=4pt,xleftmargin=2em,xrightmargin=2em]{Verilog}
 						`timescale 1 ns / 1 ps
 						
-						module TopV0(
+						module Top(
 							input wire clk_i,
-							input wire resetN_i,
+							input wire reset_ni,
 							input wire[7:0] data_iv,
 							output reg hsync_o,
 							output reg[7:0] rdata_ov
 						);
+							wire uart_rx_w;
+							reg[7:0] uart_data_rv;
+
+						endmodule
 					\end{minted}
 				\end{shaded}
 
@@ -177,8 +200,26 @@ module TopV0(
 
 	\clearpage
 
+	\section{编程风格}
+		\begin{enumerate}
+			\item 定义 module 时其输入输出端口必须在 module 的声明区内\footnote{~即 module 名后的小括号内。}完成，并且每个端口都必须显式声明其属于 reg 类型还是 wire 类型。建议在代码起始位置加入 {\fontspec{Source Code Pro}`}default\_nettype ~ none 这条语句，该语句的作用为取消默认端口类型为 wire 的设置，设为 none 即无默认设置，如此在未指定端口类型时综合将会报错，以提醒修改代码。
+			
+			\item 定义 module 的端口时，其顺序为，先定义时钟信号，然后定义复位信号，再定义控制信号，最后定义地址信号和数据信号。
+			
+			\item module 的 input 端口定义为 wire 类型，output 端口定义为 reg 类型，inout 端口\footnote{~例如 IIC 的 SDA 端口即为 inout 类型，因 IIC 通信既有读亦有写。} 定义为 wire 类型，除极特殊的应用场景外，必须如此执行。即输入信号不能寄存，而输出信号必须寄存。此举的目的在于防止出现 module 例化与互联时的端口类型不匹配错误。 \label{端口定义条目}
+			
+			\item wire 类型的信号加后缀 w，reg 类型加后缀 r，input 端口加后缀 i，output 端口加后缀 o，inout 端口加后缀 io，向量加后缀 v。由于本节第 \ref{端口定义条目} 条已经规定 input 与 inout 端口必须为 wire 类型，所以 input 与 inout 端口无需再加后缀 w。同理，output 端口也无需再加后缀 r。参见代码 \ref{命名示例二} 与代码 \ref{命名示例三}。添加后缀的顺序为先判断是否加 n，再添加端口或信号类型，最后判断是否加 v。
+			
+			\item 例化 module 时，如果连接的信号是向量，则必须显式指明其位宽，即被连接的信号需指定位宽，如 ~.picture\_iv(picture\_rv[7:0])~。参见代码 \ref{格式示例}。
+			
+			\item 例化 module 时的端口名与其连接的信号名应保持一致，除表示信号类型的后缀之外。例如 ~.uart\_clk\_i(uart\_clk\_w)~。参见代码 \ref{格式示例}。
+			
+		\end{enumerate}
+
+	\clearpage
+
 	\section{代码格式}
-		代码格式使用 Java 风格的缩进方式$^{\cite{Java 编程思想}}$，以 Java 中的 “\{” 等价 Verilog 中的 “begin”，Java 中的 “\}” 等价 Verilog 中的 “end”。编码格式使用 gbk \footnote{~考虑到 Quartus II 仅支持 gbk 编码，所以为避免乱码出现，所有编辑器统一使用 gbk 编码。}，缩进使用 Table，且 Table 宽度为 4 个空格。运算符左右各加一个空格，逗号后加一个空格，关键字与小括号之间加一个空格， module 名与小括号间不加空格，关键字与中括号间不加空格。下述例程。
+		代码格式使用 Java 风格的缩进方式$^{\cite{Java 编程思想}}$，以 Java 中的 “\{” 等价 Verilog 中的 “begin”，Java 中的 “\}” 等价 Verilog 中的 “end”。编码格式使用 gbk \footnote{~考虑到 Quartus II 仅支持 gbk 编码，所以为避免乱码出现，所有编辑器统一使用 gbk 编码。}，缩进使用 Table，且 Table 的宽度为 4 个空格。运算符左右各加一个空格，逗号后加一个空格，关键字与小括号之间加一个空格， module 名与小括号间不加空格，关键字与中括号间不加空格。下述例程。
 		
 		\begin{table}[h]
 			\caption{格式示例} \label{格式示例}
@@ -187,11 +228,12 @@ module TopV0(
 		\begin{shaded}
 			\begin{minted}[mathescape,numbers=left,numbersep=4pt,tabsize=4,gobble=4,frame=single,framesep=4pt,xleftmargin=1em,xrightmargin=0em]{Verilog}
 				`timescale 1 ns / 1 ps
+				`default_nettype none
 				`define MAX 512
 				
-				module TestAgingV0(
+				module TestAging(
 					input wire clk_i,
-					input wire resetN_i,
+					input wire reset_ni,
 					output reg[23:0] pic_data_ov
 				);
 				
@@ -251,19 +293,19 @@ module TopV0(
 						end
 					end
 					
-					PowerOnV1 PwoerOnV1_U0(
+					PowerOn PwoerOn_U0(
 						.clk_i(clk_i),
-						.resetN_i(resetN_i)
+						.reset_ni(reset_ni)
 					);
 					
-					PowerOnV1 PwoerOnV1_U1(
+					PowerOn PwoerOn_U1(
 						.clk_i(clk_i),
-						.resetN_i(resetN_i)
+						.reset_ni(reset_ni)
 					);
 					
-					PictureControlV1_U0(
+					PictureControl PictureControl_U0(
 						.clk_i(clk_i),
-						.resetN_i(resetN_i),
+						.reset_ni(reset_ni),
 						.picture_iv(picture_rv[7:0])
 					);
 					
@@ -274,21 +316,7 @@ module TopV0(
 
 	\clearpage
 
-	\section{编程风格}
-		\begin{enumerate}
-			\item 定义 module 时其输入输出端口必须在 module 的声明区\footnote{~即 module 名后的小括号内。}完成，并且每个端口都必须显式声明其属于 reg 类型还是 wrie 类型。
-			
-			\item module 的 input 端口定义为 wire 类型，output 端口定义为 reg 类型，inout 端口\footnote{~例如 IIC 的 SDA 端口即为 inout 类型，因 IIC 通信既有读亦有写。} 定义为 wire 类型，除极特殊的应用场景外，必须如此执行。即输入信号不能寄存，而输出信号必须寄存。此举的目的在于防止出现 module 例化与互联时的端口类型不匹配错误。
-			
-			\item 例化 module 时，如果连接的信号是向量，则必须显式指明其位宽，参见代码表~\ref{格式示例}~。
-			
-			\item module 端口名与其连接的信号名应尽可能保持一致\footnote{~除表示信号类型的后缀之外。}。
-			
-		\end{enumerate}
-
-	\clearpage
-
-	\begin{thebibliography}{9}
+	\begin{thebibliography}{9} % 参考文献环境，引用序号的最大宽度不超过 9 ，即一位数，影响序号的对齐参考线
 		\bibitem{Latex介绍} Tobias Oetiker, Hubert Partl, Irene Hyna and Elisabeth Schlegl. China\TeX 论坛译. 一份不太简短的 \LaTeXe 介绍[R]. 2016.
 		\bibitem{Java 编程思想} [美] Bruce Eckel. 陈昊鹏译. Java编程思想:第4版[M]. 机械工业出版社, 2007.
 		\bibitem{Verilog 标准} IEEE Computer Society. IEEE Standard for Verilog$^{\textregistered}$ Hardware Description Language[R]. IEEE Std 1364\texttrademark -2005. USA 7 April 2006.
@@ -297,9 +325,9 @@ module TopV0(
 
 	\clearpage
 
-%	\renewcommand{\numberline}[1]{\lotlabel~#1\hspace*{1em}} % 生成表格索引
+	\renewcommand{\listtablename}{代码索引} % 将表格索引的标题由表格改为代码索引
 	\listoftables % 生成表格索引
 
-	\addcontentsline{toc}{section}{表格} % 添加目录项
+	\addcontentsline{toc}{section}{代码索引} % 添加目录项
 
 \end{document}
